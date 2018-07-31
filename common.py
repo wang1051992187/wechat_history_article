@@ -4,7 +4,7 @@ import json
 from json.decoder import JSONDecodeError
 import time
 import pymongo
-from .config import *
+from config import *
 import sys
 import hashlib
 import pymysql
