@@ -1,5 +1,6 @@
-from article_detail import *
-from RedisQueue import RedisQueue
+from .article_detail import *
+from .RedisQueue import RedisQueue
+from .common import *
 from pypinyin import pinyin, lazy_pinyin, Style
 
 begin_url = '''
@@ -13,7 +14,7 @@ def get_all_url(url, nickname):
     if nickname is None:
         print("空")
         return
-    q = RedisQueue('wechat_url_'+ nickname_pinyin)
+    q = RedisQueue('wechat_url_'+ nickname_pinyin.strip())
     json_str = get_page_detail(url)
     json_re = parse_page_index(json_str)
     general_msg_list = parse_page_index(json_re['general_msg_list'])
