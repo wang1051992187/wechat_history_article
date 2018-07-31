@@ -4,7 +4,7 @@ import json
 from json.decoder import JSONDecodeError
 import time
 import pymongo
-from config import *
+from .config import *
 import sys
 import hashlib
 import pymysql
@@ -27,6 +27,7 @@ header = {
 
 client = pymongo.MongoClient('192.168.1.108', connect=False)
 db = client['wechat_2']
+
 
 def get_page_detail(url):
     '''
