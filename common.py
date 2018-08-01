@@ -26,7 +26,7 @@ header = {
 }
 
 client = pymongo.MongoClient('192.168.1.108', connect=False)
-db = client['wechat_2']
+db = client['wechat_4']
 
 
 def get_page_detail(url):
