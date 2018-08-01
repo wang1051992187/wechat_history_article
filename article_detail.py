@@ -4,10 +4,9 @@
 from bs4 import BeautifulSoup
 from common import *
 from RedisQueue import RedisQueue
-from pypinyin import pinyin, lazy_pinyin, Style
 from multiprocessing import Pool
 
-q = RedisQueue('wechat_url')
+q = RedisQueue('MzI0OTM1NzA4NA==')
 
 
 def get_content(url):
@@ -17,7 +16,8 @@ def get_content(url):
         soup = BeautifulSoup(html, 'lxml')
         content = soup.select('#js_content')[0].get_text().strip()
         content = content.replace("\xa0", "").replace("\u3000", "").replace("&quot;", "")
-        return content, html
+        name = soup.select('#js_name')[0].get_text().strip()
+        return name, content, html
     else:
         return None
 
@@ -32,18 +32,16 @@ def get_article_detail(i):
         article = get_article_info()
         if article is None or article == "":
             break
-        if q.qsize() < 2:
-            quit()
         try:
             article_info = parse_page_index(article)
             print(article_info)
             url = article_info['content_url']
             if url == '':
                 continue
-            content, html = get_content(url)
+            name, content, html = get_content(url)
             if content is not None:
                 data = {
-                    'nickname': article_info['nickname'].strip(),
+                    'nickname': name,
                     'title': article_info['title'],
                     'digest': article_info['digest'],
                     'content_url': article_info['content_url'],
@@ -51,10 +49,7 @@ def get_article_detail(i):
                     'content': content,
                     'html': html
                 }
-                # 存储为名字的拼音
-                nickname_pinyin = lazy_pinyin(article_info['nickname'].strip())
-                nickname_pinyin = "".join(nickname_pinyin)
-                save_to_mongodb(data, nickname_pinyin.strip())
+                save_to_mongodb(data, name.strip())
             else:
                 q.put(article)
         except Exception as e:
@@ -63,8 +58,10 @@ def get_article_detail(i):
 
 
 if __name__ == '__main__':
-    pool = Pool(40)
-    for i in range(40):
+    # 设置进程数量
+    pool_num = 10
+    pool = Pool(pool_num)
+    for i in range(pool_num):
         pool.apply_async(get_article_detail, (i,))
         time.sleep(1)
 
