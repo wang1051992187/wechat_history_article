@@ -15,6 +15,12 @@ biz = re.findall(r'biz=(.*?)&', begin_url)[0]
 
 
 def get_all_url(url, biz):
+    """
+    根据URL解析JSON,得到文章信息保存到Redis队列中
+    :param url:
+    :param biz:
+    :return:
+    """
     if biz is None:
         print("空")
         return
@@ -72,6 +78,11 @@ def get_all_url(url, biz):
 
 
 def url_circulate(next_offset):
+    """
+    递归爬取所有的JSON的URL
+    :param next_offset:
+    :return:
+    """
     next_url = begin_url.format(next_offset)
     print(next_url)
     next_offset = get_all_url(next_url, biz)
