@@ -27,6 +27,11 @@ def get_article_info():
 
 
 def get_article_detail(i):
+    """
+    可多进程从Redis队列中获取到文章URL，从而得到具体文章数据
+    :param i:
+    :return:
+    """
     print("当前为第{}个进程".format(i))
     while True:
         article = get_article_info()
